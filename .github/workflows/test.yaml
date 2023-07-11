@@ -1,0 +1,80 @@
+name: Run Unit Tests
+
+on: workflow_call
+
+jobs:
+  build-and-test:
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+          POSTGRES_PORT: 5432
+
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      rabbitmq:
+        image: rabbitmq:3.8
+        env:
+          RABBITMQ_DEFAULT_USER: dndev
+          RABBITMQ_DEFAULT_PASS: password
+        ports:
+          - 5672:5672
+
+    runs-on: ubuntu-latest
+    env:
+      ENV: test
+      MIX_ENV: test
+      DB_NAME: test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      RABBITMQ_HOST: localhost
+      RABBITMQ_PASS: password
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: dndev
+      RABBITMQ_SECURE: false
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+    strategy:
+      matrix:
+        otp: ["24"]
+        elixir: ["1.13.2"]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          elixir-version: ${{matrix.elixir}}
+
+      - name: Cache elixir packages
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: mix deps.get
+
+      - name: Compile Dependencies
+        run: mix deps.compile
+
+      - name: Test
+
+        run: mix test
