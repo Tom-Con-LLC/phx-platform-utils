@@ -9,6 +9,8 @@ on:
 jobs:
   prepare-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -47,4 +49,4 @@ jobs:
         uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INITIAL_VERSION: '0.1.0'
+          INITIAL_VERSION: '0.1.16'
