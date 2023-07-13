@@ -23,7 +23,7 @@ defmodule PhxPlatformUtils.MixProject do
     [
       {:castore, ">= 0.0.0"},
       {:certifi, "~> 2.8"},
-      {:ecto_sql, "~> 3.6"},
+      {:ecto_sql, "~> 3.10"},
       {:faker, "~> 0.17"},
       {:gen_rmq, "~> 4.0"},
       {:httpoison, "~> 1.8"},
@@ -31,7 +31,7 @@ defmodule PhxPlatformUtils.MixProject do
       {:jason, "~> 1.2"},
       {:joi, "~> 0.2.1"},
       {:logger_json, "~> 5.1"},
-      {:phoenix, "~> 1.6.6"},
+      {:phoenix, "~> 1.7"},
       {:phoenix_ecto, "~> 4.4"},
       {:redix, "~> 1.1"}
     ]
