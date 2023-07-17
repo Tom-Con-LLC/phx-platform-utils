@@ -28,10 +28,10 @@ defmodule PhxPlatformUtils.MixProject do
       {:gen_rmq, "~> 4.0"},
       {:httpoison, "~> 1.8"},
       {:inflex, "~> 2.0.0"},
-      {:jason, "~> 1.2"},
+      {:jason, "~> 1.4"},
       {:joi, "~> 0.2.1"},
       {:logger_json, "~> 5.1"},
-      {:phoenix, "~> 1.7"},
+      {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},
       {:redix, "~> 1.1"}
     ]
