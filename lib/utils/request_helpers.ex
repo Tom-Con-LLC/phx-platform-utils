@@ -32,8 +32,10 @@ defmodule PhxPlatformUtils.Utils.RequestHelpers do
   end
 
   @pagination_schema %{
-    "limit" => [:integer, required: false],
-    "page" => [:integer, required: false]
+    "per" => [:integer, required: false],
+    "page" => [:integer, required: false],
+    "sort_dir" => [:string, required: false, inclusion: ["asc", "desc"]],
+    "sort_by" => [:string, required: false],
   }
 
   def validate_with_pagination(params, validation_schema) do
@@ -47,15 +49,17 @@ defmodule PhxPlatformUtils.Utils.RequestHelpers do
 
     case Joi.validate(stripped_params, schema) do
       {:ok, valid_params} ->
-        offset = if valid_params["page"] && valid_params["limit"], do: (valid_params["page"] - 1) * valid_params["limit"], else: nil
-        limit = if valid_params["limit"], do: valid_params["limit"], else: nil
+        offset = if valid_params["page"] && valid_params["per"], do: (valid_params["page"] - 1) * valid_params["per"], else: nil
+        limit = if valid_params["per"], do: valid_params["per"], else: nil
+        sort_by = if valid_params["sort_by"], do: String.to_existing_atom(valid_params["sort_by"]), else: nil
+        sort_dir = if valid_params["sort_dir"], do: String.to_existing_atom(valid_params["sort_dir"]), else: nil
 
         converted_params =
           valid_params
-          |> Map.drop(["limit", "page"])
+          |> Map.drop(["per", "page", "sort_dir", "sort_by"])
           |> Enum.map(fn {key, value} -> {String.to_existing_atom(key), value} end)
 
-        {:ok, converted_params, limit, offset}
+        {:ok, converted_params, %{limit: limit, offset: offset, sort_by: sort_by, sort_dir: sort_dir}}
 
       other ->
         other
