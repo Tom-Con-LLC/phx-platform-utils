@@ -51,8 +51,8 @@ defmodule PhxPlatformUtils.Utils.RequestHelpers do
       {:ok, valid_params} ->
         offset = if valid_params["page"] && valid_params["per"], do: (valid_params["page"] - 1) * valid_params["per"], else: nil
         limit = if valid_params["per"], do: valid_params["per"], else: nil
-        sort_by = if valid_params["sort_by"], do: String.to_existing_atom(valid_params["sort_by"]), else: nil
-        sort_dir = if valid_params["sort_dir"], do: String.to_existing_atom(valid_params["sort_dir"]), else: nil
+        sort_by = if valid_params["sort_by"], do: String.to_existing_atom(valid_params["sort_by"]), else: :id
+        sort_dir = if valid_params["sort_dir"], do: String.to_existing_atom(valid_params["sort_dir"]), else: :asc
 
         converted_params =
           valid_params
