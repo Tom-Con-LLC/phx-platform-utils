@@ -5,12 +5,15 @@ defmodule PhxPlatformUtils.Plugs.GetUser do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    user =
-      conn
-      |> get_token!()
-      |> decode_token!()
+    token = get_token!(conn)
+    cond do
+      is_nil(token) ->
+        conn |> halt |> send_resp(401, "Unauthorized")
 
-    assign(conn, :user, user)
+      true ->
+        user = token |> decode_token!()
+        assign(conn, :user, user)
+    end
   end
 
   defp get_token!(conn) do
@@ -18,10 +21,6 @@ defmodule PhxPlatformUtils.Plugs.GetUser do
       ["Bearer " <> token] -> token
       _ -> nil
     end
-  end
-
-  defp decode_token!(nil) do
-    nil
   end
 
   defp decode_token!(token) do
