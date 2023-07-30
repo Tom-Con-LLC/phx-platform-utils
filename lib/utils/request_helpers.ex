@@ -57,7 +57,7 @@ defmodule PhxPlatformUtils.Utils.RequestHelpers do
         converted_params =
           valid_params
           |> Map.drop(["per", "page", "sort_dir", "sort_by"])
-          |> Enum.map(fn {key, value} -> {String.to_existing_atom(key), value} end)
+          |> recursively_atomize()
 
         {:ok, converted_params, %{limit: limit, offset: offset, sort_by: sort_by, sort_dir: sort_dir}}
 
